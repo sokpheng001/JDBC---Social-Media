@@ -43,7 +43,7 @@ public class UserRepository {
         }
         return null;
     }
-    public int deleteUserUuid(String uuid){
+    public int deleteUserByUuid(String uuid){
         String sql = "DELETE FROM users where user_uuid = ?";
         try(
                 Connection connection = DriverManager.getConnection(
@@ -52,11 +52,10 @@ public class UserRepository {
                         "123");
                 Statement statement = connection.createStatement();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
         )
         {
             preparedStatement.setString(1,uuid);
-            System.out.print("> Do you want to commit (y/n): ");
+            System.out.print("> Do you want to delete (y/n): ");
             String isCommitted = new Scanner(System.in).nextLine();
             connection.setAutoCommit(isCommitted.equalsIgnoreCase("y"));
             return preparedStatement.executeUpdate();
@@ -64,5 +63,39 @@ public class UserRepository {
             System.out.println("Problem during deleting user: " + sqlException.getMessage());
         }
         return 0;
+    }
+    public List<User> searchUserByName(String name){
+            List<User> userList = new ArrayList<>();
+            String sql = "SELECT * FROM users WHERE user_name ILIKE ?";
+            try (
+                    Connection connection = DriverManager.getConnection(
+                            "jdbc:postgresql://localhost:5432/social_media",
+                            "postgres",
+                            "123");
+                    Statement statement = connection.createStatement();
+                    PreparedStatement preparedStatement = connection.prepareStatement(sql)
+            )
+            {
+                preparedStatement.setString(1,"%" + name + "%");
+                try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        userList.add(
+                                new User(
+                                        resultSet.getInt("user_id"),
+                                        resultSet.getString("user_uuid"),
+                                        resultSet.getString("user_name"),
+                                        resultSet.getString("user_email"),
+                                        resultSet.getString("user_password"),
+                                        resultSet.getDate("created_date"),
+                                        resultSet.getBoolean("is_deleted")
+                                )
+                        );
+                    }
+                    return userList;
+                }
+            } catch (SQLException sqlException) {
+                System.out.println("Problem during searching user: " + sqlException.getMessage());
+            }
+            return new ArrayList<>();
     }
 }

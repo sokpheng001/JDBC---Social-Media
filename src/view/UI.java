@@ -11,7 +11,8 @@ public class UI {
     public static int homePage(){
         System.out.println("-".repeat(90));
         System.out.println("1/ list all users".toUpperCase(Locale.ROOT));
-        System.out.println("2/ delete user by uuid".toUpperCase(Locale.ROOT));
+        System.out.println("2/ search user".toUpperCase(Locale.ROOT));
+        System.out.println("3/ delete user by uuid".toUpperCase(Locale.ROOT));
         System.out.println("---");
         System.out.print(">/ option: ");
         return new Scanner(System.in).nextInt();

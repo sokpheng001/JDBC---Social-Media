@@ -16,6 +16,10 @@ public class Application {
                 }
                 case 2->{
                     System.out.println("-".repeat(90));
+                    userController.searchUserByName();
+                }
+                case 3->{
+                    System.out.println("-".repeat(90));
                     userController.deleteUserByUUID();
                 }
                 default -> System.out.println("Try again, you have inserted with wrong option.");
